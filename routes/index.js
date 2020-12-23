@@ -8,7 +8,7 @@ const User      = require("../models/user");
 
 // Index Route
 router.get("/", async (req, res) => {
-    res.send("Lamo");
+    res.send("Levelop");
 });
 
 // Handling User Register
@@ -20,26 +20,20 @@ router.post("/register", async (req, res) => {
     });
     let password = req.body.password;
 
-    await User.register(user, password, (err, user) => {
-        if (err) {
-            console.log(err);
-        } else {
-            console.log("User Created!");
-            res.send(user);
-        }
-    }).catch(e => { res.send(e + "WOW") });
+    const newUser = await User.register(user, password).catch(err => console.log(err));
+    res.json(newUser);
 });
 
 // Handling User Login
-router.post("/login", passport.authenticate("local", {
-    successRedirect: "/posts",
-    failureRedirect: "/login"
-}), (req, res) => { res.send("Logged in") });
+router.post("/login", passport.authenticate("local"), async (req, res) => {
+    const foundUser = await User.find({email: req.body.email}).catch(err => console.log(err));
+    res.json(foundUser);
+});
 
 // Logging Out User
 router.get("/logout", async (req, res) => {
     req.logout();
-    res.redirect("/login");
+    res.json("User Logged Out!");
 });
 
 module.exports = router;

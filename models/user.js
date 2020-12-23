@@ -10,5 +10,5 @@ let userSchema = new mongoose.Schema({
     imageURL: String
 });
 
-userSchema.plugin(passportLocalMongoose);
+userSchema.plugin(passportLocalMongoose, { usernameField : 'email' });
 module.exports = mongoose.model("User", userSchema);

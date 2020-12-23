@@ -1,5 +1,6 @@
 // Global Requirements
 const express           = require("express"),
+      cors              = require('cors'),
       env               = require('dotenv').config(),
       mongoose          = require("mongoose"),
       passport          = require("passport"),
@@ -26,12 +27,13 @@ mongoose.connect(process.env.MONGO_CONNECT, {
 
 // Express Session
 app.use(require("express-session")({
-    secret: "This is Zain",
+    secret: process.env.SECRET,
     resave: false,
     saveUninitialized: false
 }));
 
 // Global Declarations
+app.use(cors());
 app.use(express.static(__dirname + "/public"));
 app.use(bodyParser.urlencoded({extended: true}));
 app.set("view engine", "ejs");
@@ -39,7 +41,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 // Passport Declarations
-passport.use(new LocalStrategy(User.authenticate()));
+passport.use(User.createStrategy());
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
