@@ -3,19 +3,29 @@ const express       = require("express"),
       router        = express.Router({mergeParams: true});
 
 // Local Requirements
-const Post          = require("../models/post");
+const Post          = require("../models/post"),
+      middleware    = require("../middleware/index");
+
+
+// Checking Current User on All Routes
+// router.get("*", middleware.checkUser);
+// router.post("*", middleware.checkUser);
 
 // Showing All Posts
 router.get("/", async (req, res) => {
-    const allPosts = await Post.find({}).select("name _id").catch(err => console.log(err));
+    const allPosts = await Post.find({}).select("title _id").catch(err => console.log(err));
     res.json(allPosts);
 });
 
 // Creating A New Post
-router.post("/", async (req, res) => {
+router.post("/", middleware.requireAuth, async (req, res) => {
     let newPost = ({
-        name: req.body.name,
-        content: req.body.content
+        title: req.body.title,
+        content: req.body.content,
+        // author: {
+        //     id: router.locals.user._id,
+        //     username: router.locals.user.username
+        // }
     });
 
     const createdPost = await Post.create(newPost).catch(err => console.log(err));

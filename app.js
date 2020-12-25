@@ -1,55 +1,38 @@
 // Global Requirements
 const express           = require("express"),
-      cors              = require('cors'),
-      env               = require('dotenv').config(),
+      cors              = require("cors"),
+      env               = require("dotenv").config(),
       mongoose          = require("mongoose"),
-      passport          = require("passport"),
-      LocalStrategy     = require("passport-local"),
       bodyParser        = require("body-parser"),
-      flash             = require("connect-flash"),
-      methodOverride    = require("method-override"),
+      cookieParser      = require("cookie-parser"),
       app               = express(),
       port              = 6969;
 
 // Local Requirements
-const Post              = require("./models/post"),
-      User              = require("./models/user"),
-      postRoutes        = require("./routes/post"),
-      authRoutes        = require("./routes/index");
+const postRoutes        = require("./routes/post"),
+      authRoutes        = require("./routes/auth");
 
 // Mongoose Connect
-mongoose.connect(process.env.MONGO_CONNECT, {
-    useNewUrlParser: true,
-    useFindAndModify: false,
-    useCreateIndex: true,
-    useUnifiedTopology: true
-});
+mongoose.connect(process.env.MONGO_CONNECT, {useNewUrlParser: true, useFindAndModify: false, useCreateIndex: true, useUnifiedTopology: true})
+        .then(result => app.listen(port, () => {console.log("Server Running")}))
+        .catch(err => console.log(err));
 
-// Express Session
-app.use(require("express-session")({
-    secret: process.env.SECRET,
-    resave: false,
-    saveUninitialized: false
+// Middleware
+app.use(cors({
+    origin: "http://localhost:3000",
+    credentials: true,
 }));
-
-// Global Declarations
-app.use(cors());
-app.use(express.static(__dirname + "/public"));
+app.use(express.json());
+app.use(cookieParser());
 app.use(bodyParser.urlencoded({extended: true}));
-app.set("view engine", "ejs");
-app.use(passport.initialize());
-app.use(passport.session());
-
-// Passport Declarations
-passport.use(User.createStrategy());
-passport.serializeUser(User.serializeUser());
-passport.deserializeUser(User.deserializeUser());
+app.use(function(req, res, next) {
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+    res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With, content-type');
+    res.setHeader('Access-Control-Allow-Credentials', true);
+    res.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
+    next();
+});
 
 // Using Routes
-app.use("/", authRoutes);
+app.use(authRoutes);
 app.use("/posts", postRoutes);
-
-// Running Server
-app.listen(port, () => {
-    console.log("Server runnning!");
-});
