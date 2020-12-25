@@ -52,7 +52,7 @@ module.exports.register = async (req, res) => {
     try {
         const newUser = await User.create({ email, password, username });
         const token = createToken(newUser._id);
-        res.cookie("jwt", token, { httpOnly: true, maxAge: 260000000 });
+        res.cookie("jwt", token, { secure: true, sameSite: none, maxAge: 260000000 });
         res.status(201).json(newUser);
     } catch (err) {
         const errors = handleRegisterErrors(err);
@@ -66,7 +66,7 @@ module.exports.login = async (req, res) => {
     try {
         const user = await User.login(email, password);
         const token = createToken(user._id);
-        res.cookie("jwt", token, { maxAge: 260000000 });
+        res.cookie("jwt", token, { secure: true, sameSite: none, maxAge: 260000000 });
         res.status(200).json({ user });
     } catch (err) {
         const errors = handleLoginErrors(err);
