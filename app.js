@@ -18,11 +18,11 @@ mongoose.connect(process.env.MONGO_CONNECT, {useNewUrlParser: true, useFindAndMo
         .catch(err => console.log(err));
 
 // Middleware
-app.use(cookieParser());
 app.use(cors({
     origin: "*"
 }));
 app.use(express.json());
+app.use(cookieParser());
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(function(req, res, next) {
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
