@@ -5,13 +5,12 @@ middleware = {}
 
 // Is User Logged In?
 middleware.requireAuth = (req, res, next) => {
-    const token = req.cookies.jwt;
+    const token = req.get("Authorization");
     
     // check jwt exists and && is verified
     if (token) {
         jwt.verify(token, process.env.JWT_SECRET, (err, decodedToken) => {
             if (err) {
-                console.log(err);
                 res.json({ tokenVerified: false });
             } else {
                 next();
@@ -24,17 +23,19 @@ middleware.requireAuth = (req, res, next) => {
 
 // Check Current User
 middleware.checkUser = (req, res, next) => {
-    const token = req.cookies.jwt;
+    const token = req.get("Authorization");
+    console.log(token);
 
     if (token) {
         jwt.verify(token, process.env.JWT_SECRET, async (err, decodedToken) => {
             if (err) {
-                console.log(err);
-                res.locals.user = null;
+                console.log("Error: " + err);
+                console.log(decodedToken._id);
+                // res.locals.user = null;
                 next()
             } else {
                 let user = await User.findById(decodedToken.id);
-                res.locals.user = user;
+                // res.locals.user = user;
                 next();
             }
         });

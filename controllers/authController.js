@@ -52,8 +52,7 @@ module.exports.register = async (req, res) => {
     try {
         const newUser = await User.create({ email, password, username });
         const token = createToken(newUser._id);
-        res.cookie("jwt", token, { maxAge: 260000000 });
-        res.status(201).json(newUser);
+        res.status(201).json({ newUser, token });
     } catch (err) {
         const errors = handleRegisterErrors(err);
         res.status(400).json({ errors });
@@ -66,15 +65,9 @@ module.exports.login = async (req, res) => {
     try {
         const user = await User.login(email, password);
         const token = createToken(user._id);
-        res.cookie("jwt", token, { maxAge: 260000000 });
-        res.status(200).json({ user });
+        res.status(200).json({ user, token });
     } catch (err) {
         const errors = handleLoginErrors(err);
         res.status(400).json({ errors });
     }
-}
-
-module.exports.logout = (req, res) => {
-    res.cookie("jwt", "", { maxAge: 1 });
-    res.json({ loggedOut: true });
 }

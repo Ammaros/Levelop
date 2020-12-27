@@ -10,6 +10,5 @@ const User              = require("../models/user");
 router.get("/", authController.index);
 router.post("/register", authController.register);
 router.post("/login", authController.login);
-router.get("/logout", authController.logout);
 
 module.exports = router;

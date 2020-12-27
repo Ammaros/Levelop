@@ -21,7 +21,7 @@ router.get("/", async (req, res) => {
 router.post("/", middleware.requireAuth, async (req, res) => {
     let newPost = ({
         title: req.body.title,
-        content: req.body.content,
+        content: req.body.content
         // author: {
         //     id: router.locals.user._id,
         //     username: router.locals.user.username
