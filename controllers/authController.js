@@ -1,51 +1,18 @@
-const User      = require("../models/user"),
-      jwt       = require("jsonwebtoken");
-
-// *REGISTER ERROR HANDLING*
-const handleRegisterErrors = err => {
-    // console.log(err.message, err.code);
-    errors = { email: "", password: "", username: "" };
-
-    // duplicate error code
-    if (err.code === 11000) {
-        errors.email = "That email is already taken!";
-        return errors;
-    }
-        
-    // validation errors
-    if (err.message.includes('User validation failed')) {
-        Object.values(err.errors).forEach(({properties}) => {
-            errors[properties.path] = properties.message;
-        });
-    }
-    return errors;
-}
-
-// *LOGIN ERROR HANDLING*
-const handleLoginErrors = err => {
-    errors = { email: "", password: ""}
-
-    // incorrect email
-    if (err.message === "incorrect email") {
-        errors.email = "That email is not registered"
-    }
-
-    // incorrect password
-    if (err.message === "incorrect password") {
-        errors.password = "That password does not match the email"
-    }
-    return errors
-}
+const User          = require("../models/user"),
+      jwt           = require("jsonwebtoken"),
+      authErrors    = require("./authErrors");
 
 // *CREATING JWT*
 const createToken = (id) => {
     return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: 260000 });
 }
 
+// Index Page
 module.exports.index = async (req, res) => {
     res.json("You have arrived at the Index Page");
 } 
 
+// Register Page
 module.exports.register = async (req, res) => {
     const { email, password, username } = req.body;
     
@@ -54,11 +21,12 @@ module.exports.register = async (req, res) => {
         const token = createToken(newUser._id);
         res.status(201).json({ newUser, token });
     } catch (err) {
-        const errors = handleRegisterErrors(err);
+        const errors = authErrors.handleRegisterErrors(err);
         res.status(400).json({ errors });
     }
 }
 
+// Login Page
 module.exports.login = async (req, res) => {
     const { email, password } = req.body;
 
@@ -67,7 +35,7 @@ module.exports.login = async (req, res) => {
         const token = createToken(user._id);
         res.status(200).json({ user, token });
     } catch (err) {
-        const errors = handleLoginErrors(err);
+        const errors = authErrors.handleLoginErrors(err);
         res.status(400).json({ errors });
     }
 }

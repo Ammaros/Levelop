@@ -10,6 +10,7 @@ const express           = require("express"),
  
 // Local Requirements
 const postRoutes        = require("./routes/post"),
+      commentRoutes     = require("./routes/comments")
       authRoutes        = require("./routes/auth");
       middleware        = require("./middleware/index");
 
@@ -27,9 +28,7 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(bodyParser.urlencoded({extended: true}));
 
-// Checking Current User on all Paths
-// app.all('*', middleware.checkUser);
-
 // Using Routes
-app.use(authRoutes);
+app.use("/", authRoutes);
+app.use("/posts/:id/comments", commentRoutes);
 app.use("/posts", postRoutes);
