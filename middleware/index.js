@@ -30,20 +30,18 @@ middleware.checkUser = (req, res, next) => {
         jwt.verify(token, process.env.JWT_SECRET, async (err, decodedToken) => {
             if (err) {
                 console.log("Error: " + err);
-                console.log(decodedToken._id);
-                // res.locals.user = null;
                 next()
             } else {
-                let user = await User.findById(decodedToken.id);
-                // res.locals.user = user;
+                let user = await User.findById(decodedToken.id)
+                req.currentUser = user;
+                console.log("middleware: " + user.username)
                 next();
             }
         });
     } else {
-        res.locals.user = null;
+        
         next();
     }
 }
-
 
 module.exports = middleware;

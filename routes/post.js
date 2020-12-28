@@ -6,29 +6,30 @@ const express       = require("express"),
 const Post          = require("../models/post"),
       middleware    = require("../middleware/index");
 
-
 // Checking Current User on All Routes
 // router.get("*", middleware.checkUser);
 // router.post("*", middleware.checkUser);
 
 // Showing All Posts
 router.get("/", async (req, res) => {
-    const allPosts = await Post.find({}).select("title _id").catch(err => console.log(err));
+    const allPosts = await Post.find({}).select("title author _id").catch(err => console.log(err));
     res.json(allPosts);
 });
 
 // Creating A New Post
-router.post("/", middleware.requireAuth, async (req, res) => {
+router.post("/", middleware.requireAuth, middleware.checkUser, async (req, res) => {
     let newPost = ({
         title: req.body.title,
-        content: req.body.content
-        // author: {
-        //     id: router.locals.user._id,
-        //     username: router.locals.user.username
-        // }
+        content: req.body.content,
+        author: {
+            id: req.currentUser._id,
+            username: req.currentUser.username
+        }
     });
+    console.log("posts: " + req.currentUser._id);
 
     const createdPost = await Post.create(newPost).catch(err => console.log(err));
+    console.log(createdPost);
     res.json(createdPost);
 });
 
