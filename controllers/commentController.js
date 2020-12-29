@@ -16,11 +16,13 @@ module.exports.newComment = async (req, res) => {
     res.json(createdComment, foundPost);
 }
 
+// Edit a Comment
 module.exports.editComment = async (req, res) => {
     const editedComment = await Comment.findByIdAndUpdate(req.params.comment_id, req.body.comment).catch(err => console.log(err));
     res.json(editedComment)
 }
 
+// Delete a Comment
 module.exports.deleteComment = async (req, res) => {
     let deletedComment = await Comment.findByIdAndRemove(req.params.comment_id).catch(err => console.log(err));
     res.json({ success: true });

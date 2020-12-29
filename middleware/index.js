@@ -45,7 +45,7 @@ middleware.checkUser = (req, res, next) => {
 // Check Post Ownership
 middleware.checkPostOwnership = (req, res, next) => {
     const token = req.get("Authorization");
-
+    
     if (token) {
         jwt.verify(token, process.env.JWT_SECRET, async (err, decodedToken) => {
             if (err) {

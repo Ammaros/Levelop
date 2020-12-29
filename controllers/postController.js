@@ -30,12 +30,13 @@ module.exports.showPost = async (req, res) => {
 
 // Edit a Post
 module.exports.editPost = async (req, res) => {
-    const editedPost = await Post.findByIdAndUpdate(req.params.id, req.body.post).catch(err => console.log(err));
-    res.json(editedPost);
+    updatedPost = req.body.post;
+    const editedPost = await Post.findByIdAndUpdate(req.params.id, updatedPost).catch(err => console.log(err));
+    res.json({ editedPost, updatedPost });
 }
 
 // Delete a Post
 module.exports.deletePost = async (req, res) => {
     const deletedPost = await Post.findByIdAndRemove(req.params.id).catch(err => console.log(err));
-    res.json({ success: true })''
+    res.json({ success: true });
 }
