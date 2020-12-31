@@ -14,10 +14,10 @@ module.exports.index = async (req, res) => {
 
 // Register Page
 module.exports.register = async (req, res) => {
-    const { email, password, username } = req.body;
+    const { email, password, username, fullname } = req.body;
     
     try {
-        const newUser = await User.create({ email, password, username });
+        const newUser = await User.create({ email, password, username, fullname });
         const token = createToken(newUser._id);
         res.status(201).json({ newUser, token });
     } catch (err) {

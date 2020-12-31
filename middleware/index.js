@@ -73,9 +73,9 @@ middleware.checkCommentOwnership = (req, res, next) => {
         jwt.verify(token, process.env.JWT_SECRET, async (err, decodedToken) => {
             if (err) {
                 console.log("Error: " + err);
-                res.json("Token Not Verified");
+                res.json({ tokenVerified: false});
             } else {
-                let comment = await Comment.findById(req.params.id).catch(err => console.log(err));
+                let comment = await Comment.findById(req.params.comment_id).catch(err => console.log(err));
                 if (comment.author.id.equals(decodedToken.id)) {
                     next();
                 } else {
@@ -84,7 +84,7 @@ middleware.checkCommentOwnership = (req, res, next) => {
             }
         });
     } else {
-        res.json("Invalid Token");
+        res.json({ tokenValidity: false});
     }
 }
 

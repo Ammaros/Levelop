@@ -20,6 +20,10 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: [true, "Please enter a username"],
         unique: true
+    },
+    fullname: {
+        type: String,
+        required: [true, "Please enter your full name"]
     }
 });
 

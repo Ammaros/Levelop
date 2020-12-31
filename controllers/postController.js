@@ -24,13 +24,15 @@ module.exports.createPost = async (req, res) => {
 
 // Show Specific Post
 module.exports.showPost = async (req, res) => {
-    const foundPost = await Post.findById(req.params.id).catch(err => console.log(err));
+    const foundPost = await Post.findById(req.params.id)
+                    .populate("comments")
+                    .exec().catch(err => console.log(err));
     res.json(foundPost);
 }
 
 // Edit a Post
 module.exports.editPost = async (req, res) => {
-    updatedPost = req.body.post;
+    let updatedPost = req.body.post;
     const editedPost = await Post.findByIdAndUpdate(req.params.id, updatedPost).catch(err => console.log(err));
     res.json({ editedPost, updatedPost });
 }

@@ -1,6 +1,6 @@
 // *REGISTER ERROR HANDLING*
 module.exports.handleRegisterErrors = err => {
-    errors = { email: "", password: "", username: "" };
+    errors = { email: "", password: "", username: "", fullname: "" };
 
     // duplicate error code
     if (err.code === 11000) {
