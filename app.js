@@ -14,12 +14,12 @@ const postRoutes        = require("./routes/post"),
       authRoutes        = require("./routes/auth");
       middleware        = require("./middleware/index");
 
-// Mongoose Connect
+// Connecting Database
 mongoose.connect(process.env.MONGO_CONNECT, {useNewUrlParser: true, useFindAndModify: false, useCreateIndex: true, useUnifiedTopology: true})
         .then(result => app.listen(port, () => {console.log("Server Running")}))
         .catch(err => console.log(err));
 
-// Middleware
+// Global Middleware
 app.use(cors({
     origin: ["http://localhost:3000", "http://192.168.10.2:3000"],
     credentials: true
@@ -28,7 +28,7 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(bodyParser.urlencoded({extended: true}));
 
-// Using Routes
+// Routes
 app.use("/", authRoutes);
 app.use("/posts/:id/comments", commentRoutes);
 app.use("/posts", postRoutes);

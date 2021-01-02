@@ -14,11 +14,12 @@ module.exports.index = async (req, res) => {
 
 // Register Page
 module.exports.register = async (req, res) => {
-    const { email, password, username, fullname } = req.body;
+    const { email, password, username, fullname } = req.body; // Getting data from body
     
     try {
+        // Creating user according to scheme
         const newUser = await User.create({ email, password, username, fullname });
-        const token = createToken(newUser._id);
+        const token = createToken(newUser._id); // Creating JWT
         res.status(201).json({ newUser, token });
     } catch (err) {
         const errors = authErrors.handleRegisterErrors(err);
@@ -28,11 +29,12 @@ module.exports.register = async (req, res) => {
 
 // Login Page
 module.exports.login = async (req, res) => {
-    const { email, password } = req.body;
+    const { email, password } = req.body; // Getting data from body
 
     try {
+        // Loggin in with credentials
         const user = await User.login(email, password);
-        const token = createToken(user._id);
+        const token = createToken(user._id); // Creating JWT
         res.status(200).json({ user, token });
     } catch (err) {
         const errors = authErrors.handleLoginErrors(err);

@@ -9,6 +9,7 @@ module.exports.allPosts = async (req, res) => {
 
 // Create a New Post
 module.exports.createPost = async (req, res) => {
+    // Making an object with data from frontend
     let newPost = ({
         title: req.body.title,
         content: req.body.content,
@@ -18,12 +19,14 @@ module.exports.createPost = async (req, res) => {
         }
     });
 
+    // Creating a new Post
     const createdPost = await Post.create(newPost).catch(err => console.log(err));
     res.json(createdPost);
 }
 
 // Show Specific Post
 module.exports.showPost = async (req, res) => {
+    // Finding a Post, populating it with comments and passing it
     const foundPost = await Post.findById(req.params.id)
                     .populate("comments")
                     .exec().catch(err => console.log(err));
@@ -32,6 +35,7 @@ module.exports.showPost = async (req, res) => {
 
 // Edit a Post
 module.exports.editPost = async (req, res) => {
+    // Getting post id and changed data to update the post 
     let updatedPost = req.body.post;
     const editedPost = await Post.findByIdAndUpdate(req.params.id, updatedPost).catch(err => console.log(err));
     res.json({ editedPost, updatedPost });
@@ -39,6 +43,7 @@ module.exports.editPost = async (req, res) => {
 
 // Delete a Post
 module.exports.deletePost = async (req, res) => {
+    // Finding a post by id and removing from DB
     const deletedPost = await Post.findByIdAndRemove(req.params.id).catch(err => console.log(err));
     res.json({ success: true });
 }

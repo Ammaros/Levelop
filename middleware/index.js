@@ -3,58 +3,68 @@ const jwt         = require("jsonwebtoken"),
       Post        = require("../models/post"),
       Comment     = require("../models/comments");
 
+// Storing All Middleware
 middleware = {}
 
 // Is User Logged In
 middleware.requireAuth = (req, res, next) => {
-    const token = req.get("Authorization");
+    const token = req.get("Authorization"); // Get JWT from Header
 
+    // Check if token is not null
     if (token) {
+        // Verify and check authenticity of the token 
         jwt.verify(token, process.env.JWT_SECRET, (err, decodedToken) => {
             if (err) {
                 res.json({ tokenVerified: false });
             } else {
-                next();
+                next(); // Continue on route
             }
         });
     } else {
-        res.json({ authenticated: false });
+        res.json({ token: false });
     }
 }
 
 // Check Current User
 middleware.checkUser = (req, res, next) => {
-    const token = req.get("Authorization");
+    const token = req.get("Authorization"); // Get JWT from Header
 
+    // Check if token is not null
     if (token) {
+        // Verify and check authenticity of the token 
         jwt.verify(token, process.env.JWT_SECRET, async (err, decodedToken) => {
             if (err) {
                 console.log("Error: " + err);
-                next()
+                next() // Continue on route
             } else {
-                let user = await User.findById(decodedToken.id)
-                req.currentUser = user;
-                next();
+                // Find user
+                let user = await User.findById(decodedToken.id);
+                req.currentUser = user; // Creating a global variable for the user
+                next(); // Continue on route
             }
         });
     } else {
-        next();
+        next(); // Continue on route
     }
 }
 
 // Check Post Ownership
 middleware.checkPostOwnership = (req, res, next) => {
-    const token = req.get("Authorization");
+    const token = req.get("Authorization"); // Get JWT from Header
     
+    // Check if token is not null
     if (token) {
+        // Verify and check authenticity of the token 
         jwt.verify(token, process.env.JWT_SECRET, async (err, decodedToken) => {
             if (err) {
                 console.log("Error: " + err);
                 res.json("Token Not Verified");
             } else {
+                // Find post
                 let post = await Post.findById(req.params.id).catch(err => console.log(err));
+                // Check if author and user are the same
                 if (post.author.id.equals(decodedToken.id)) {
-                    next();
+                    next(); // Continue on route
                 } else {
                     res.json({ postOwnership: false });
                 }
@@ -67,17 +77,21 @@ middleware.checkPostOwnership = (req, res, next) => {
 
 // Check Comment Ownership
 middleware.checkCommentOwnership = (req, res, next) => {
-    const token = req.get("Authorization");
+    const token = req.get("Authorization"); // Get JWT from Header
 
+    // Check if token is not null
     if (token) {
+        // Verify and check authenticity of the token
         jwt.verify(token, process.env.JWT_SECRET, async (err, decodedToken) => {
             if (err) {
                 console.log("Error: " + err);
                 res.json({ tokenVerified: false});
             } else {
+                // Find comment
                 let comment = await Comment.findById(req.params.comment_id).catch(err => console.log(err));
+                // Check if author and user are the same
                 if (comment.author.id.equals(decodedToken.id)) {
-                    next();
+                    next(); // Continue on Route
                 } else {
                     res.json({ commentOwnership: false });
                 }

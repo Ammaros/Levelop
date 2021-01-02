@@ -16,7 +16,7 @@ module.exports.newComment = async (req, res) => {
     // Making Comment and Pushing to Post according to Schema
     const createdComment = await Comment.create(newComment).catch(err => console.log(err));
     foundPost.comments.push(createdComment);
-    foundPost.save();
+    await foundPost.save();
 
     // Refresh Post and Populate with Comments
     Post.findById(req.params.id).populate("comments").exec((err, refreshPost) => {
