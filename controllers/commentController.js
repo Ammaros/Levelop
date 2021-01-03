@@ -30,14 +30,23 @@ module.exports.newComment = async (req, res) => {
 
 // Edit a Comment
 module.exports.editComment = async (req, res) => {
-    let updatedComment = req.body.text 
-    const editedComment = await Comment.findByIdAndUpdate(req.params.comment_id, updatedComment).catch(err => console.log(err));
-    res.json(editedComment)
+    const editComment = await Comment.findById(req.params.comment_id).catch(err => console.log(err));
+    editComment.text = req.body.text;
+    editComment.save();
+
+    // Refresh Post and Populate with Comments
+    Post.findById(req.params.id).populate("comments").exec((err, refreshPost) => {
+        if (err) {
+            console.log(err);
+        } else {
+            res.json({ refreshPost, editComment });
+        }
+    });
 }
 
 // Delete a Comment
 module.exports.deleteComment = async (req, res) => {
-    let deletedComment = await Comment.findByIdAndRemove(req.params.comment_id).catch(err => console.log(err));
+    const deletedComment = await Comment.findByIdAndRemove(req.params.comment_id).catch(err => console.log(err));
 
     // Refresh Post and Populate with Comments
     Post.findById(req.params.id).populate("comments").exec((err, refreshPost) => {
