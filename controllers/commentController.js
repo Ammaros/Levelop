@@ -23,7 +23,8 @@ module.exports.newComment = async (req, res) => {
         if (err) {
             console.log(err);
         } else {
-            res.json({ createdComment, refreshPost });
+            console.log(refreshPost);
+            res.json(refreshPost);
         }
     });
 }
@@ -39,7 +40,8 @@ module.exports.editComment = async (req, res) => {
         if (err) {
             console.log(err);
         } else {
-            res.json({ refreshPost, editComment });
+            console.log(refreshPost);
+            res.json(refreshPost);
         }
     });
 }

@@ -11,7 +11,7 @@ router.get("/", postController.allPosts);
 // New Post POST Route
 router.post("/", middleware.requireAuth, middleware.checkUser, postController.createPost);
 // Show Post GET Route
-router.get("/:id", postController.showPost);
+router.get("/:id", middleware.checkUser, postController.showPost);
 // Edit Post PUT Route
 router.put("/:id", middleware.checkPostOwnership, postController.editPost);
 // Delete Post DELETE Route

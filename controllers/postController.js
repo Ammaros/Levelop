@@ -27,10 +27,16 @@ module.exports.createPost = async (req, res) => {
 // Show Specific Post
 module.exports.showPost = async (req, res) => {
     // Finding a Post, populating it with comments and passing it
+    let user = req.currentUser || "";
     const foundPost = await Post.findById(req.params.id)
                     .populate("comments")
                     .exec().catch(err => console.log(err));
-    res.json(foundPost);
+    
+    if (user) {
+        res.json({ foundPost, user });
+    } else {
+        res.json({ foundPost });
+    }
 }
 
 // Edit a Post

@@ -58,7 +58,7 @@ middleware.checkPostOwnership = (req, res, next) => {
         jwt.verify(token, process.env.JWT_SECRET, async (err, decodedToken) => {
             if (err) {
                 console.log("Error: " + err);
-                res.json("Token Not Verified");
+                res.json({ tokenVerified: false});
             } else {
                 // Find post
                 let post = await Post.findById(req.params.id).catch(err => console.log(err));
@@ -71,7 +71,7 @@ middleware.checkPostOwnership = (req, res, next) => {
             }
         });
     } else {
-        res.json("Invalid Token");
+        res.json({ token: false});
     }
 }
 
@@ -98,7 +98,37 @@ middleware.checkCommentOwnership = (req, res, next) => {
             }
         });
     } else {
-        res.json({ tokenValidity: false});
+        res.json({ token: false});
+    }
+}
+
+// Check ownership before showing post
+middleware.checkOwnership = (req, res, next) => {
+    const token = req.get("Authorization"); // Get JWT from Header
+
+    // Check if token is not null
+    if (token) {
+        // Verify and check authenticity of the token
+        jwt.verify(token, process.env.JWT_SECRET, async (err, decodedToken) => {
+            if (err) {
+                console.log("Error: " + err);
+                next();
+            } else {
+                // Find comment
+                let post = await Post.findById(req.params.comment_id).catch(err => console.log(err));
+                // Check if author and user are the same
+                if (post.author.id.equals(decodedToken.id)) {
+                    res.json({ postOwnership: true });
+                    next(); // Continue on Route
+                } else {
+                    res.json({ postOwnership: false });
+                    next();
+                }
+            }
+        });
+    } else {
+        res.json({ postOwnership: false });
+        next();
     }
 }
 
