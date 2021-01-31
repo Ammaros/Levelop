@@ -43,8 +43,10 @@ module.exports.showPost = async (req, res) => {
 module.exports.editPost = async (req, res) => {
     // Getting post id and changed data to update the post 
     let updatedPost = req.body.post;
-    const editedPost = await Post.findByIdAndUpdate(req.params.id, updatedPost).catch(err => console.log(err));
-    res.json({ editedPost, updatedPost });
+    const editedPost = await Post.findByIdAndUpdate(req.params.id, updatedPost)
+                    .populate("comments")
+                    .exec().catch(err => console.log(err));
+    res.json({ editedPost });
 }
 
 // Delete a Post

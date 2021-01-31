@@ -34,7 +34,7 @@ middleware.checkUser = (req, res, next) => {
         // Verify and check authenticity of the token 
         jwt.verify(token, process.env.JWT_SECRET, async (err, decodedToken) => {
             if (err) {
-                console.log("Error: " + err);
+                // console.log("Error: " + err);
                 next() // Continue on route
             } else {
                 // Find user
@@ -57,7 +57,7 @@ middleware.checkPostOwnership = (req, res, next) => {
         // Verify and check authenticity of the token 
         jwt.verify(token, process.env.JWT_SECRET, async (err, decodedToken) => {
             if (err) {
-                console.log("Error: " + err);
+                // console.log("Error: " + err);
                 res.json({ tokenVerified: false});
             } else {
                 // Find post
@@ -84,7 +84,7 @@ middleware.checkCommentOwnership = (req, res, next) => {
         // Verify and check authenticity of the token
         jwt.verify(token, process.env.JWT_SECRET, async (err, decodedToken) => {
             if (err) {
-                console.log("Error: " + err);
+                // console.log("Error: " + err);
                 res.json({ tokenVerified: false});
             } else {
                 // Find comment
@@ -111,7 +111,7 @@ middleware.checkOwnership = (req, res, next) => {
         // Verify and check authenticity of the token
         jwt.verify(token, process.env.JWT_SECRET, async (err, decodedToken) => {
             if (err) {
-                console.log("Error: " + err);
+                // console.log("Error: " + err);
                 next();
             } else {
                 // Find comment
