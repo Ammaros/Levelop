@@ -24,7 +24,8 @@ app.use(cors({
     origin: [
         "http://localhost:3000/",
         "http://192.168.10.2:3000/",
-        "https://levelop.herokuapp.com/"
+        "https://levelop.herokuapp.com/",
+        "https://dakheera47.github.io/"
     ],
     credentials: true
 }));
