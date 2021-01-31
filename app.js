@@ -21,7 +21,11 @@ mongoose.connect(process.env.MONGO_CONNECT, {useNewUrlParser: true, useFindAndMo
 
 // Global Middleware
 app.use(cors({
-    origin: ["http://localhost:3000", "http://192.168.10.2:3000"],
+    origin: [
+        "http://localhost:3000/",
+        "http://192.168.10.2:3000/",
+        "https://levelop.herokuapp.com/"
+    ],
     credentials: true
 }));
 mongoose.set('returnOriginal', false);
