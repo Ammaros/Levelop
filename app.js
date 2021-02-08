@@ -25,7 +25,8 @@ app.use(cors({
         "http://localhost:3000",
         "http://192.168.10.2:3000",
         "https://levelop.herokuapp.com",
-        "https://dakheera47.github.io"
+        "https://dakheera47.github.io",
+        "https://levelop.netlify.app/"
     ],
     credentials: true
 }));
